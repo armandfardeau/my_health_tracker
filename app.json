@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Mon journal",
+    "slug": "mon-journal-local",
+    "android": {
+      "package": "local.carnet.symptomes",
+      "allowBackup": false
+    },
+    "ios": {
+      "bundleIdentifier": "local.carnet.symptomes"
+    },
+    "plugins": [
+      "expo-notifications",
+      "expo-sqlite",
+      "./withJournalStorage.cjs",
+      "expo-router"
+    ],
+    "web": {
+      "bundler": "metro"
+    },
+    "scheme": "monjournal"
+  }
+}

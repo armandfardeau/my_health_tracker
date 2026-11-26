@@ -1,0 +1,10 @@
+/node_modules/
+/dist/
+/.expo/
+/expo-android.png
+.env*
+*.jks
+*.keystore
+*.sqlite*
+*.db*
+journal-*.json

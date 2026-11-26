@@ -1,0 +1,9 @@
+{
+  "cli": {"appVersionSource": "remote"},
+  "build": {
+    "play-test": {"distribution": "store", "autoIncrement": true, "android": {"buildType": "app-bundle"}}
+  },
+  "submit": {
+    "play-test": {"android": {"track": "internal", "releaseStatus": "completed"}}
+  }
+}
