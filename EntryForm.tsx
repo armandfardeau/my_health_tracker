@@ -15,10 +15,15 @@ const steps = [
 const lastStep = steps.length - 1;
 type MultiField = 'details' | 'signs' | 'fatigue' | 'fatigueContext';
 
-export function EntryForm({date, onSaved}: {date?: Date; onSaved?: () => void}) {
+export function EntryForm({date, onSaved, onStart, onExit}: {
+  date?: Date;
+  onSaved?: () => void;
+  onStart?: () => void;
+  onExit?: () => void;
+}) {
   const {record} = useJournal();
   const setWizardControls = useSetWizardControls();
-  const [step, setStep] = useState<number | null>(null);
+  const [step, setStep] = useState<number | null>(onExit ? 0 : null);
   const [category, setCategory] = useState<SymptomCategory>();
   const [answers, setAnswers] = useState<SymptomAnswers>({});
   const [note, setNote] = useState('');
@@ -182,7 +187,7 @@ export function EntryForm({date, onSaved}: {date?: Date; onSaved?: () => void}) 
   }
 
   const controls = step === null ? null : <>
-    <Button label="Retour" disabled={saving} onPress={() => step === 0 ? setStep(null) : goTo(step - 1)}/>
+    <Button label="Retour" disabled={saving} onPress={() => step === 0 ? (onExit ?? reset)() : goTo(step - 1)}/>
     <Button label={step === lastStep ? 'Passer et enregistrer' : 'Passer'} disabled={saving} onPress={skip}/>
     {step === lastStep
       ? <Button label="Enregistrer" active disabled={saving} onPress={() => void submit(false)}/>
@@ -202,7 +207,7 @@ export function EntryForm({date, onSaved}: {date?: Date; onSaved?: () => void}) 
         editable={!saving} maxLength={5} style={styles.input}/>
     </View>}
     {step === null ? <View style={row}>
-      <Button label="Noter un symptôme" active disabled={saving} onPress={() => goTo(0)}/>
+      <Button label="Noter un symptôme" active disabled={saving} onPress={onStart ?? (() => goTo(0))}/>
       <Button well icon={Smile} label="Je vais bien" disabled={saving} onPress={() => void submit(true)}/>
     </View> : (
       <View key={step} style={styles.stack}>

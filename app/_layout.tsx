@@ -13,6 +13,7 @@ export default function Layout(){
           <Tabs.Screen name="index" options={{title:'Aujourd’hui',tabBarIcon:({color,size})=><NotebookPen color={color} size={size}/>}}/>
           <Tabs.Screen name="calendrier" options={{title:'Calendrier',tabBarIcon:({color,size})=><CalendarDays color={color} size={size}/>}}/>
           <Tabs.Screen name="reglages" options={{title:'Réglages',tabBarIcon:({color,size})=><Settings color={color} size={size}/>}}/>
+          <Tabs.Screen name="wizard" options={{href:null}}/>
         </Tabs>
       </WizardControlsProvider>
     </JournalProvider>

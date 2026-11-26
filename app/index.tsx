@@ -1,3 +1,4 @@
+import {useRouter} from 'expo-router';
 import {Platform, Text, View} from 'react-native';
 import {EntryForm} from '../EntryForm';
 import {useJournal} from '../JournalState';
@@ -12,6 +13,7 @@ const dateFormat = new Intl.DateTimeFormat('fr-FR', {
 });
 
 export default function Today() {
+  const router = useRouter();
   const {entries, clock, rem, message, today} = useJournal();
   const recentDays = Array.from({length: 5}, (_, index) => {
     const date = new Date(clock.getFullYear(), clock.getMonth(), clock.getDate() - index - 1);
@@ -53,7 +55,7 @@ export default function Today() {
       {Platform.OS === 'web' && rem && clock.getHours() >= 20 && !entries.some(entry => entry.day === today) && (
         <Text>Votre rappel du soir · Prenez un instant pour noter votre ressenti.</Text>
       )}
-      <EntryForm/>
+      <EntryForm onStart={() => router.navigate('/wizard')}/>
       {!!message && <Text accessibilityLiveRegion="polite">{message}</Text>}
     </JournalPage>
   );
