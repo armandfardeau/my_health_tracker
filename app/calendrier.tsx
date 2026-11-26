@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {EntryForm} from '../EntryForm';
+import {EntryReview} from '../EntryReview';
 import {View,Text,Pressable} from 'react-native';
 import {Smile,NotebookPen} from 'lucide-react-native';
 import {JournalPage,Button,symptomIcons,blue,ink,muted,paper,green,row,heading} from '../JournalUI';
@@ -22,7 +23,7 @@ export default function Calendar(){
  {chosen<today && (editing===chosen
    ? <><EntryForm key={chosen} date={selected} onSaved={()=>setEditing(null)}/><Button label="Annuler" onPress={()=>setEditing(null)}/></>
    : <Button label="Ajouter un événement à cette date" active onPress={()=>setEditing(chosen)}/>)}
- {entries.filter(e=>e.day===chosen).sort((a,b)=>a.time.localeCompare(b.time)).map(e=>{const Icon=e.category?(symptomIcons[e.category]??NotebookPen):Smile;return <View key={e.id} style={{padding:12,backgroundColor:paper,borderWidth:1,borderColor:'#C8D6E5',borderRadius:12}}><View style={{flexDirection:'row',alignItems:'center',gap:7}}><Icon size={18} color={e.category?blue:green}/><Text style={{color:e.category?blue:green,fontWeight:'700'}}>{new Date(e.time).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})} · {e.answers && e.category === 'Digestif' ? 'Digestion' : e.answers && e.category === 'Autre' ? 'Symptôme' : e.category || 'Je vais bien'}</Text></View>{!!e.note&&<Text>{e.note}</Text>}{e.answers && answerSummary(e.answers).map(([label, value]) => <Text key={label} style={{color:ink}}><Text style={{fontWeight:'600'}}>{label} · </Text>{value}</Text>)}</View>})}{!entries.some(e=>e.day===chosen)&&<Text>Aucune entrée ce jour.</Text>}
+ {entries.filter(e=>e.day===chosen).sort((a,b)=>a.time.localeCompare(b.time)).map(e=>{const Icon=e.category?(symptomIcons[e.category]??NotebookPen):Smile;return <View key={e.id} style={{padding:12,backgroundColor:paper,borderWidth:1,borderColor:'#C8D6E5',borderRadius:12}}><View style={{flexDirection:'row',alignItems:'center',gap:7}}><Icon size={18} color={e.category?blue:green}/><Text style={{color:e.category?blue:green,fontWeight:'700'}}>{new Date(e.time).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})} · {e.answers && e.category === 'Digestif' ? 'Digestion' : e.answers && e.category === 'Autre' ? 'Symptôme' : e.category || 'Je vais bien'}</Text></View>{!!e.note&&<Text>{e.note}</Text>}{e.answers && answerSummary(e.answers).map(([label, value]) => <Text key={label} style={{color:ink}}><Text style={{fontWeight:'600'}}>{label} · </Text>{value}</Text>)}{e.category && <EntryReview entry={e} entries={entries}/>}</View>})}{!entries.some(e=>e.day===chosen)&&<Text>Aucune entrée ce jour.</Text>}
 </JournalPage>
 }
 

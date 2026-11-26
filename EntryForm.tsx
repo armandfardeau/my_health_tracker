@@ -1,4 +1,6 @@
-import React, {useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
+import {useFocusEffect} from 'expo-router';
+import {useSetWizardControls} from './WizardTabBar';
 import {Text, View, TextInput, StyleSheet} from 'react-native';
 import {Smile} from 'lucide-react-native';
 import {Button, blue, heading, ink, muted, paper, row} from './JournalUI';
@@ -15,6 +17,7 @@ type MultiField = 'details' | 'signs' | 'fatigue' | 'fatigueContext';
 
 export function EntryForm({date, onSaved}: {date?: Date; onSaved?: () => void}) {
   const {record} = useJournal();
+  const setWizardControls = useSetWizardControls();
   const [step, setStep] = useState<number | null>(null);
   const [category, setCategory] = useState<SymptomCategory>();
   const [answers, setAnswers] = useState<SymptomAnswers>({});
@@ -178,6 +181,20 @@ export function EntryForm({date, onSaved}: {date?: Date; onSaved?: () => void}) 
     }
   }
 
+  const controls = step === null ? null : <>
+    <Button label="Retour" disabled={saving} onPress={() => step === 0 ? setStep(null) : goTo(step - 1)}/>
+    <Button label={step === lastStep ? 'Passer et enregistrer' : 'Passer'} disabled={saving} onPress={skip}/>
+    {step === lastStep
+      ? <Button label="Enregistrer" active disabled={saving} onPress={() => void submit(false)}/>
+      : <Button label="Suivant" active disabled={step === 1 && !category} onPress={() => goTo(step + 1)}/>}
+  </>;
+
+  useFocusEffect(useCallback(() => {
+    if (!controls) return;
+    setWizardControls(controls);
+    return () => setWizardControls(null);
+  }, [controls, setWizardControls]));
+
   return <>
     {date && <View>
       <Text style={styles.text}>Heure de l’événement (HH:MM)</Text>
@@ -187,20 +204,13 @@ export function EntryForm({date, onSaved}: {date?: Date; onSaved?: () => void}) 
     {step === null ? <View style={row}>
       <Button label="Noter un symptôme" active disabled={saving} onPress={() => goTo(0)}/>
       <Button well icon={Smile} label="Je vais bien" disabled={saving} onPress={() => void submit(true)}/>
-    </View> : <>
+    </View> : (
       <View key={step} style={styles.stack}>
         <Text accessibilityLiveRegion="polite" style={styles.text}>Étape {step + 1} sur {steps.length}</Text>
         <Text accessibilityRole="header" style={heading}>{steps[step]}</Text>
         {stepContent()}
       </View>
-      <View style={row}>
-        <Button label="Retour" disabled={saving} onPress={() => step === 0 ? setStep(null) : goTo(step - 1)}/>
-        <Button label={step === lastStep ? 'Passer et enregistrer' : 'Passer'} disabled={saving} onPress={skip}/>
-        {step === lastStep
-          ? <Button label="Enregistrer" active disabled={saving} onPress={() => void submit(false)}/>
-          : <Button label="Suivant" active disabled={step === 1 && !category} onPress={() => goTo(step + 1)}/>}
-      </View>
-    </>}
+    )}
     {!!error && <Text accessibilityLiveRegion="polite" style={styles.text}>{error}</Text>}
   </>;
 }

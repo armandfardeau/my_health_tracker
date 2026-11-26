@@ -18,6 +18,13 @@
     "web": {
       "bundler": "metro"
     },
-    "scheme": "monjournal"
+    "scheme": "monjournal",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2d8b1d75-caf8-4f10-ae2d-2c9ed8c38650"
+      }
+    },
+    "owner": "armandsolo"
   }
 }
